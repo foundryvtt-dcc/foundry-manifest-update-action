@@ -3,7 +3,7 @@
 const core = require('@actions/core')
 const fs = require('fs')
 const github = require('@actions/github')
-const http = require('http');
+const https = require('https');
 const shell = require('shelljs')
 
 const manifestFileName = core.getInput('manifestFileName')
@@ -23,7 +23,7 @@ async function updateManifest () {
     const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${latestRelease.data.tag_name}/system.json`
 
     const file = fs.createWriteStream(manifestFileName)
-    await http.get(manifestURL, function(response) {
+    await https.get(manifestURL, function(response) {
       response.pipe(file)
     });
     file.close()

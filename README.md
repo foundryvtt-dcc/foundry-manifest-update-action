@@ -13,9 +13,10 @@ In the `workflows` folder, create a file named `foundry_manifest_update.yml` wit
 ```
 name: Foundry Manifest Update
 
-release:
-    types:
-      - published
+on:
+    release:
+        types:
+          - published
 
 jobs:
   update_manifest_post_release:

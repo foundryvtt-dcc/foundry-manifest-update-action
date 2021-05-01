@@ -25,7 +25,6 @@ async function updateManifest () {
     const file = fs.createWriteStream(manifestFileName)
     await https.get(manifestURL, function(response) {
       response.pipe(file)
-      file.close()
     });
 
 

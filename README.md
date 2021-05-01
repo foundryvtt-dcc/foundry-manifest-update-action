@@ -24,7 +24,7 @@ jobs:
     name: Foundry Manifest Update
     steps:
       - name: Foundry Manifest Update
-        id: foundry-manifest Update
+        id: foundry-manifest-update
         uses: foundryvtt-dcc/foundry-manifest-update-action@main
         with:
           actionToken: ${{ secrets.GITHUB_TOKEN }}

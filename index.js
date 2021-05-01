@@ -27,6 +27,11 @@ async function updateManifest () {
       response.pipe(file)
     });
 
+    await shell.exec(`git config user.email "${committer_email}"`)
+    await shell.exec(`git config user.name "${committer_username}"`)
+    await shell.exec(`git commit -am "Release ${latestRelease.data.tag_name}"`)
+    await shell.exec(`git push`)
+
 
   } catch (error) {
     core.setFailed(error.message)

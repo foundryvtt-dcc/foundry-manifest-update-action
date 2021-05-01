@@ -1,5 +1,5 @@
-name: 'Foundry Release Action'
-description: 'GitHub Action to Release Foundry VTT Systems and Modules'
+name: 'Foundry Manifest Update Action'
+description: 'GitHub Action to Update Foundry VTT Manifest in main After a Release'
 inputs:
   actionToken:
     description: 'Github Token'

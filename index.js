@@ -29,6 +29,7 @@ async function updateManifest () {
 
     await shell.exec(`git config user.email "${committer_email}"`)
     await shell.exec(`git config user.name "${committer_username}"`)
+    await shell.exec(`git pull`)
     await shell.exec(`git commit -am "Release ${latestRelease.data.tag_name}"`)
     await shell.exec(`git push origin HEAD:main`)
 

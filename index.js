@@ -28,11 +28,12 @@ async function updateManifest () {
 
     await https.get(manifestURL, (response) => {
       response.on('data', (data) => {
+        console.log(data)
         fs.writeFileSync(manifestFileName, data)
       })
     })
 
-    await shell.exec(`cat ${manifestFileName}`)
+    //await shell.exec(`cat ${manifestFileName}`)
     console.log(shell.exec(`git status`))
     //await shell.exec(`git commit -am "Release ${latestRelease.data.tag_name}"`)
     //await shell.exec(`git push origin HEAD:main`)

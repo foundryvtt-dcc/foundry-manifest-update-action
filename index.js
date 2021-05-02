@@ -22,12 +22,7 @@ async function updateManifest () {
     })
     const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${latestRelease.data.tag_name}/system.json`
 
-    // const file = fs.createWriteStream(manifestFileName)
-    // await https.get(manifestURL, function(response) {
-    //   response.pipe(file)
-    // });
-
-    https.get(manifestURL, (response) => {
+    await https.get(manifestURL, (response) => {
       console.log('statusCode:', response.statusCode)
       console.log('headers:', response.headers)
 

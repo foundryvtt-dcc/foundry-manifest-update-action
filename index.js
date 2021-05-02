@@ -16,22 +16,20 @@ const committer_username = committer_email
 
 async function updateManifest () {
   try {
-    await shell.exec(`git config user.email "${committer_email}"`)
-    await shell.exec(`git config user.name "${committer_username}"`)
-    //await shell.exec(`git pull origin main`)
 
+    // Download updated manifest file
     const latestRelease = await octokit.rest.repos.getLatestRelease({
       owner: owner,
       repo: repo,
     })
     const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${latestRelease.data.tag_name}/system.json`
-
     await download(manifestURL, '.')
 
-    //await shell.exec(`cat ${manifestFileName}`)
-    console.log(shell.exec(`git status`))
-    //await shell.exec(`git commit -am "Release ${latestRelease.data.tag_name}"`)
-    //await shell.exec(`git push origin HEAD:main`)
+    // Commit and push updated manifest
+    await shell.exec(`git config user.email "${committer_email}"`)
+    await shell.exec(`git config user.name "${committer_username}"`)
+    await shell.exec(`git commit -am "Release ${latestRelease.data.tag_name}"`)
+    await shell.exec(`git push origin main`)
 
   } catch (error) {
     core.setFailed(error.message)

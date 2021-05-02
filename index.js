@@ -36,6 +36,7 @@ async function updateManifest () {
       })
     })
 
+    await shell.exec(`cat ${manifestFileName}`)
     await shell.exec(`git config user.email "${committer_email}"`)
     await shell.exec(`git config user.name "${committer_username}"`)
     await shell.exec(`git pull origin main`)

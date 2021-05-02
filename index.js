@@ -1,9 +1,9 @@
 // noinspection JSUnresolvedFunction,JSIgnoredPromiseFromCall
 
 const core = require('@actions/core')
-const fs = require('fs')
+// const fs = require('fs')
 const github = require('@actions/github')
-const https = require('https')
+const download = require('download')
 const shell = require('shelljs')
 
 const manifestFileName = core.getInput('manifestFileName')
@@ -26,12 +26,7 @@ async function updateManifest () {
     })
     const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${latestRelease.data.tag_name}/system.json`
 
-    await https.get(manifestURL, (response) => {
-      response.on('data', (data) => {
-        console.log(data)
-        fs.writeFileSync(manifestFileName, data)
-      })
-    })
+    await download(manifestURL, '.')
 
     //await shell.exec(`cat ${manifestFileName}`)
     console.log(shell.exec(`git status`))

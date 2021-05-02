@@ -2,10 +2,12 @@
 
 const core = require('@actions/core')
 const download = require('download')
+const fs = require('fs')
 const github = require('@actions/github')
 const shell = require('shelljs')
 
 const manifestFileName = core.getInput('manifestFileName')
+const manifestProtectedTrue = core.getInput('manifestProtectedTrue')
 const actionToken = core.getInput('actionToken')
 const octokit = github.getOctokit(actionToken)
 const owner = github.context.payload.repository.owner.login
@@ -23,6 +25,13 @@ async function updateManifest () {
     })
     const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${latestRelease.data.tag_name}/system.json`
     await download(manifestURL, '.')
+
+    // Replace Data in Manifest
+    const manifestProtectedValue = 'true' ? manifestProtectedTrue : 'false'
+    const data = fs.readFileSync(manifestFileName, 'utf8')
+    const formatted = data
+      .replace(/"protected": .*,/i, `"protected": ${manifestProtectedValue},`)
+    fs.writeFileSync(manifestFileName, formatted, 'utf8')
 
     // Commit and push updated manifest
     await shell.exec(`git config user.email "${committer_email}"`)

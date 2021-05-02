@@ -9,6 +9,10 @@ inputs:
     description: 'Name of the Foundry Manifest File, either system.json or module.json'
     required: true
     default: 'module.json'
+  manifestProtectedTrue:
+    description: 'Set to true to keep protected:true in the manifest once it is checked back in, otherwise it will be set back to false'
+    required: false
+    default: "false"
 runs:
   using: 'node12'
   main: 'index.js'

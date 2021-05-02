@@ -3,7 +3,7 @@
 const core = require('@actions/core')
 const fs = require('fs')
 const github = require('@actions/github')
-const https = require('https');
+const https = require('https')
 const shell = require('shelljs')
 
 const manifestFileName = core.getInput('manifestFileName')
@@ -22,17 +22,25 @@ async function updateManifest () {
     })
     const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${latestRelease.data.tag_name}/system.json`
 
-    const file = fs.createWriteStream(manifestFileName)
-    await https.get(manifestURL, function(response) {
-      response.pipe(file)
-    });
+    // const file = fs.createWriteStream(manifestFileName)
+    // await https.get(manifestURL, function(response) {
+    //   response.pipe(file)
+    // });
+
+    https.get(manifestURL, (response) => {
+      console.log('statusCode:', response.statusCode)
+      console.log('headers:', response.headers)
+
+      response.on('data', (data) => {
+        fs.writeFileSync(manifestFileName, data)
+      })
+    })
 
     await shell.exec(`git config user.email "${committer_email}"`)
     await shell.exec(`git config user.name "${committer_username}"`)
     await shell.exec(`git pull origin main`)
-    await shell.exec(`git commit -am "Release ${latestRelease.data.tag_name}"`)
-    await shell.exec(`git push origin HEAD:main`)
-
+    //await shell.exec(`git commit -am "Release ${latestRelease.data.tag_name}"`)
+    //await shell.exec(`git push origin HEAD:main`)
 
   } catch (error) {
     core.setFailed(error.message)

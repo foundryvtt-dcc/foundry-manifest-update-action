@@ -23,7 +23,7 @@ async function updateManifest () {
       owner: owner,
       repo: repo,
     })
-    const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${latestRelease.data.tag_name}/system.json`
+    const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${latestRelease.data.tag_name}/${manifestFileName}`
     await download(manifestURL, '.')
 
     // Replace Data in Manifest

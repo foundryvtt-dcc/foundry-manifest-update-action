@@ -1,10 +1,9 @@
 // noinspection JSUnresolvedFunction,JSIgnoredPromiseFromCall
 
-const core = require('@actions/core')
-// const fs = require('fs')
-const github = require('@actions/github')
-const download = require('download')
-const shell = require('shelljs')
+const { core } = require('@actions/core')
+const { github } = require('@actions/github')
+const { download } = require('download')
+const { shell } = require('shelljs')
 
 const manifestFileName = core.getInput('manifestFileName')
 const actionToken = core.getInput('actionToken')
@@ -42,8 +41,6 @@ async function run () {
     if (manifestFileName !== 'system.json' && manifestFileName !== 'module.json')
       core.setFailed('manifestFileName must be system.json or module.json')
 
-    // const payload = JSON.stringify(github.context.payload, undefined, 2)
-    // console.log(`The event payload: ${payload}`)
     await updateManifest()
 
   } catch (error) {

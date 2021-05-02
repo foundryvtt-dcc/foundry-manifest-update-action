@@ -18,7 +18,7 @@ async function updateManifest () {
   try {
     await shell.exec(`git config user.email "${committer_email}"`)
     await shell.exec(`git config user.name "${committer_username}"`)
-    await shell.exec(`git pull origin main`)
+    //await shell.exec(`git pull origin main`)
 
     const latestRelease = await octokit.rest.repos.getLatestRelease({
       owner: owner,

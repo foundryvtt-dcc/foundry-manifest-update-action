@@ -1,8 +1,8 @@
 // noinspection JSUnresolvedFunction,JSIgnoredPromiseFromCall
 
 const { core } = require('@actions/core')
-const { github } = require('@actions/github')
 const { download } = require('download')
+const { github } = require('@actions/github')
 const { shell } = require('shelljs')
 
 const manifestFileName = core.getInput('manifestFileName')

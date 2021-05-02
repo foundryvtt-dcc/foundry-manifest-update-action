@@ -14,15 +14,21 @@ In the `workflows` folder, create a file named `foundry_manifest_update.yml` wit
 name: Foundry Manifest Update
 
 on:
-    release:
-        types:
-          - published
+  release:
+    types:
+      - published
 
 jobs:
   update_manifest_post_release:
     runs-on: ubuntu-latest
     name: Foundry Manifest Update
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+
       - name: Foundry Manifest Update
         id: foundry-manifest-update
         uses: foundryvtt-dcc/foundry-manifest-update-action@main

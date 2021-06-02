@@ -22,10 +22,25 @@ async function updateManifest () {
       owner: owner,
       repo: repo,
     })
-    const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${latestRelease.data.tag_name}/${manifestFileName}`
+
+    // Get the Asset ID of the manifest from the release info
+    let assetID = 0
+    for (const item of latestRelease.assets) {
+      if (item.name === manifestFileName) {
+        console.log(item.name)
+        console.log(item.id)
+        assetID = item.id
+      }
+    }
+    if (assetID === 0) {
+      console.log(latestRelease)
+      core.setFailed('No AssetID for manifest')
+    }
+
+    const manifestURL = `https://api.github.com/repos/${owner}/${repo}/releases/assets/${assetID}`
     console.log(manifestURL)
-    await shell.exec(`curl --header 'Authorization: token ${actionToken}' --header 'Accept: application/vnd.github.v3.raw' --remote-name --location ${manifestURL}`)
-    console.log("Past Download")
+    //await shell.exec(`curl --header 'Authorization: token ${actionToken}' --header 'Accept: application/vnd.github.v3.raw' --remote-name --location ${manifestURL}`)
+    console.log('Past Download')
 
     // Replace Data in Manifest
     const manifestProtectedValue = 'true' ? manifestProtectedTrue : 'false'

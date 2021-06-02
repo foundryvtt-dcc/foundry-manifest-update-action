@@ -1,7 +1,6 @@
 // noinspection JSUnresolvedFunction,JSIgnoredPromiseFromCall
 
 const core = require('@actions/core')
-const download = require('download')
 const fs = require('fs')
 const github = require('@actions/github')
 const shell = require('shelljs')
@@ -25,7 +24,7 @@ async function updateManifest () {
     })
     const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${latestRelease.data.tag_name}/${manifestFileName}`
     console.log(manifestURL)
-    await download(manifestURL, '.')
+    await shell.exec(`curl --header 'Authorization: token ${actionToken}' --header 'Accept: application/vnd.github.v3.raw' --remote-name --location ${manifestURL}`)
     console.log("Past Download")
 
     // Replace Data in Manifest

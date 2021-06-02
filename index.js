@@ -22,6 +22,7 @@ async function updateManifest () {
       owner: owner,
       repo: repo,
     })
+    console.log(latestRelease)
 
     // Get the Asset ID of the manifest from the release info
     let assetID = 0

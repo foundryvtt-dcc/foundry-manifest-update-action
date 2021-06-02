@@ -28,8 +28,6 @@ async function updateManifest () {
     let assetID = 0
     for (const item of latestRelease.data.assets) {
       if (item.name === manifestFileName) {
-        console.log(item.name)
-        console.log(item.id)
         assetID = item.id
       }
     }
@@ -40,7 +38,7 @@ async function updateManifest () {
 
     const manifestURL = `https://api.github.com/repos/${owner}/${repo}/releases/assets/${assetID}`
     console.log(manifestURL)
-    //await shell.exec(`curl --header 'Authorization: token ${actionToken}' --header 'Accept: application/vnd.github.v3.raw' --remote-name --location ${manifestURL}`)
+    await shell.exec(`curl --header 'Authorization: token ${actionToken}' --header 'Accept: application/octet-stream' --output ${manifestFileName} --location ${manifestURL}`)
     console.log('Past Download')
 
     // Replace Data in Manifest

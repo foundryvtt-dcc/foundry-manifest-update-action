@@ -22,11 +22,11 @@ async function updateManifest () {
       owner: owner,
       repo: repo,
     })
-    console.log(latestRelease)
+    console.log(latestRelease.data.assets)
 
     // Get the Asset ID of the manifest from the release info
     let assetID = 0
-    for (const item of latestRelease.assets) {
+    for (const item of latestRelease.data.assets) {
       if (item.name === manifestFileName) {
         console.log(item.name)
         console.log(item.id)

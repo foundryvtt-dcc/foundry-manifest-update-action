@@ -24,7 +24,7 @@ jobs:
     name: Foundry Manifest Update
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: main

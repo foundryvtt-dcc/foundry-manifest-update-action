@@ -1,6 +1,6 @@
 # GitHub Action to Update Manifest in `main` After a Release is Published
 
-This GitHub Action enables you to release a Foundry VTT System or Module by simply updating the 'version.txt' file in your main branch.
+This GitHub Action updates the module.json or system.json file after a release is published.
 
 This is to be used with the `foundry-release-action`, and runs after a release is published to copy the manifest into main with the latest version information.
 

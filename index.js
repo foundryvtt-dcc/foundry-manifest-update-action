@@ -11,7 +11,7 @@ const actionToken = core.getInput('actionToken')
 const octokit = github.getOctokit(actionToken)
 const owner = github.context.payload.repository.owner.login
 const repo = github.context.payload.repository.name
-const committer_email = github.context.payload.release.author.login
+const committer_email = github.context?.payload?.release?.author?.login || github.event.head_commit.committer.name
 const committer_username = committer_email
 
 async function updateManifest () {

@@ -42,10 +42,10 @@ async function updateManifest () {
     console.log('Past Download')
 
     // Replace Data in Manifest
-    const manifestProtectedValue = 'true' ? manifestProtectedTrue : 'false'
+    const manifestProtectedValue = manifestProtectedTrue === 'true' ? 'true' : 'false'
     const data = fs.readFileSync(manifestFileName, 'utf8')
     const formatted = data
-      .replace(/"protected": .*,/i, `"protected": ${manifestProtectedValue},`)
+      .replace(/"protected"\s*:\s*(true|false)/i, `"protected": ${manifestProtectedValue}`)
     fs.writeFileSync(manifestFileName, formatted, 'utf8')
 
     // Commit and push updated manifest

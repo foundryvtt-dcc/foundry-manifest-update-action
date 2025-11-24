@@ -48,6 +48,10 @@ async function updateManifest () {
       .replace(/"protected"\s*:\s*(true|false)/i, `"protected": ${manifestProtectedValue}`)
     fs.writeFileSync(manifestFileName, formatted, 'utf8')
 
+    // Create/update latest.json as a clone of the updated manifest
+    fs.writeFileSync('latest.json', formatted, 'utf8')
+    console.log('Created/updated latest.json')
+
     // Commit and push updated manifest
     await shell.exec(`git config user.email "${committer_email}"`)
     await shell.exec(`git config user.name "${committer_username}"`)

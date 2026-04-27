@@ -1,11 +1,15 @@
 {
   "name": "foundry-manifest-update-action",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "GitHub Action to Update Foundry VTT Manifest After a Release is Published",
   "main": "index.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/foundryvtt-dcc/foundry-manifest-update-action.git"
+  },
+  "scripts": {
+    "check": "standard --fix"
   },
   "keywords": [
     "GitHub",
@@ -18,9 +22,15 @@
     "url": "https://github.com/foundryvtt-dcc/foundry-manifest-update-action/issues"
   },
   "homepage": "https://github.com/foundryvtt-dcc/foundry-manifest-update-action#readme",
+  "engines": {
+    "node": ">=24"
+  },
   "dependencies": {
-    "@actions/core": "^1.10.1",
-    "@actions/github": "^6.0.0",
-    "shelljs": "^0.8.5"
+    "@actions/core": "^3.0.1",
+    "@actions/github": "^9.1.1",
+    "shelljs": "^0.10.0"
+  },
+  "devDependencies": {
+    "standard": "^17.1.2"
   }
 }

@@ -1,9 +1,9 @@
 // noinspection JSUnresolvedFunction,JSIgnoredPromiseFromCall
 
-const core = require('@actions/core')
-const fs = require('fs')
-const github = require('@actions/github')
-const shell = require('shelljs')
+import * as core from '@actions/core'
+import fs from 'fs'
+import * as github from '@actions/github'
+import shell from 'shelljs'
 
 const manifestFileName = core.getInput('manifestFileName')
 const manifestProtectedTrue = core.getInput('manifestProtectedTrue')
@@ -11,16 +11,15 @@ const actionToken = core.getInput('actionToken')
 const octokit = github.getOctokit(actionToken)
 const owner = github.context.payload.repository.owner.login
 const repo = github.context.payload.repository.name
-const committer_email = github.context?.payload?.release?.author?.login || github.context?.payload?.head_commit?.author?.email
-const committer_username = committer_email
+const committerEmail = github.context?.payload?.release?.author?.login || github.context?.payload?.head_commit?.author?.email
+const committerUsername = committerEmail
 
 async function updateManifest () {
   try {
-
     // Download updated manifest file
     const latestRelease = await octokit.rest.repos.getLatestRelease({
-      owner: owner,
-      repo: repo,
+      owner,
+      repo
     })
     console.log(latestRelease.data.assets)
 
@@ -53,12 +52,11 @@ async function updateManifest () {
     console.log('Created/updated latest.json')
 
     // Commit and push updated manifest
-    await shell.exec(`git config user.email "${committer_email}"`)
-    await shell.exec(`git config user.name "${committer_username}"`)
-    await shell.exec(`git add latest.json`)
+    await shell.exec(`git config user.email "${committerEmail}"`)
+    await shell.exec(`git config user.name "${committerUsername}"`)
+    await shell.exec('git add latest.json')
     await shell.exec(`git commit -am "Release ${latestRelease.data.tag_name}"`)
-    await shell.exec(`git push origin main`)
-
+    await shell.exec('git push origin main')
   } catch (error) {
     core.setFailed(error.message)
   }
@@ -67,11 +65,9 @@ async function updateManifest () {
 async function run () {
   try {
     // Validate manifestFileName
-    if (manifestFileName !== 'system.json' && manifestFileName !== 'module.json')
-      core.setFailed('manifestFileName must be system.json or module.json')
+    if (manifestFileName !== 'system.json' && manifestFileName !== 'module.json') { core.setFailed('manifestFileName must be system.json or module.json') }
 
     await updateManifest()
-
   } catch (error) {
     core.setFailed(error.message)
   }

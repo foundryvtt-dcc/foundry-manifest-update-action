@@ -51,6 +51,24 @@ async function updateManifest () {
     fs.writeFileSync('latest.json', formatted, 'utf8')
     console.log('Created/updated latest.json')
 
+    // Keep package.json's version in sync with the released manifest. package.json
+    // is not shipped to Foundry, but syncing here (the action that commits to main)
+    // stops the npm metadata version from drifting away from the module version.
+    try {
+      const manifestVersion = JSON.parse(formatted).version
+      if (manifestVersion && fs.existsSync('package.json')) {
+        const pkg = fs.readFileSync('package.json', 'utf8')
+        const bumped = pkg.replace(/("version"\s*:\s*)"[^"]*"/, `$1"${manifestVersion}"`)
+        if (bumped !== pkg) {
+          fs.writeFileSync('package.json', bumped, 'utf8')
+          await shell.exec('git add package.json')
+          console.log(`Synced package.json version to ${manifestVersion}`)
+        }
+      }
+    } catch (err) {
+      console.log(`Could not sync package.json version: ${err.message}`)
+    }
+
     // Commit and push updated manifest
     await shell.exec(`git config user.email "${committerEmail}"`)
     await shell.exec(`git config user.name "${committerUsername}"`)

@@ -33,11 +33,41 @@ async function updateManifest () {
     if (assetID === 0) {
       console.log(latestRelease)
       core.setFailed('No AssetID for manifest')
+      return
     }
 
     const manifestURL = `https://api.github.com/repos/${owner}/${repo}/releases/assets/${assetID}`
     console.log(manifestURL)
-    await shell.exec(`curl --header 'Authorization: token ${actionToken}' --header 'Accept: application/octet-stream' --output ${manifestFileName} --location ${manifestURL}`)
+
+    // Download to a temp file first and verify it before overwriting the live
+    // manifest. curl writes whatever it receives to --output, so a non-200
+    // response (e.g. a GitHub "404 Not Found" JSON body) would otherwise clobber
+    // module.json/latest.json with garbage and get committed back to main.
+    const downloadTmp = `${manifestFileName}.download`
+    const httpCode = shell.exec(
+      'curl --silent --show-error --location --write-out \'%{http_code}\' ' +
+      `--output ${downloadTmp} ` +
+      `--header 'Authorization: token ${actionToken}' ` +
+      '--header \'Accept: application/octet-stream\' ' +
+      `${manifestURL}`
+    ).stdout.trim()
+
+    if (httpCode !== '200') {
+      core.setFailed(`Failed to download manifest asset (HTTP ${httpCode}); leaving ${manifestFileName} untouched`)
+      return
+    }
+
+    // Verify the downloaded asset is actually a parseable manifest before we
+    // promote it over the committed copy.
+    const downloaded = fs.readFileSync(downloadTmp, 'utf8')
+    try {
+      JSON.parse(downloaded)
+    } catch (err) {
+      core.setFailed(`Downloaded manifest asset is not valid JSON: ${err.message}`)
+      return
+    }
+    fs.writeFileSync(manifestFileName, downloaded, 'utf8')
+    fs.unlinkSync(downloadTmp)
     console.log('Past Download')
 
     // Replace Data in Manifest
@@ -73,6 +103,16 @@ async function updateManifest () {
     await shell.exec(`git config user.email "${committerEmail}"`)
     await shell.exec(`git config user.name "${committerUsername}"`)
     await shell.exec('git add latest.json')
+
+    // Skip the commit/push entirely when nothing changed. `git commit` exits
+    // non-zero on an empty tree, so re-running a release (or releasing a manifest
+    // identical to what is already on main) would otherwise error out.
+    const pending = shell.exec('git status --porcelain', { silent: true }).stdout.trim()
+    if (!pending) {
+      console.log('Manifest already up to date on main; nothing to commit.')
+      return
+    }
+
     await shell.exec(`git commit -am "Release ${latestRelease.data.tag_name}"`)
     await shell.exec('git push origin main')
   } catch (error) {
